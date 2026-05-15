@@ -68,3 +68,76 @@ public class EmailConsole {
         }
     }
 }
+
+
+--------------------------------------------------------------------------------------------------------------------------
+// Email with the attachments 
+
+
+public class EmailConsoleAttachment {
+
+    public static void sendEmailWithAttachment(
+
+        String toEmail,
+        String subject,
+        String body
+    ){
+
+        try{
+
+            Messaging.SingleEmailMessage mail =
+                new Messaging.SingleEmailMessage();
+
+            mail.setToAddresses(
+                new List<String>{toEmail}
+            );
+
+            mail.setSubject(subject);
+
+            mail.setPlainTextBody(body);
+
+            // Create Attachment
+
+            Messaging.EmailFileAttachment attachment =
+                new Messaging.EmailFileAttachment();
+
+            attachment.setFileName('Sample.txt');
+
+            attachment.setBody(
+
+                Blob.valueOf(
+                    'This is attachment content'
+                )
+            );
+
+            attachment.setContentType('text/plain');
+
+            // Attach File
+
+            mail.setFileAttachments(
+
+                new Messaging.EmailFileAttachment[]
+                {attachment}
+            );
+
+            // Send Email
+
+            Messaging.sendEmail(
+
+                new Messaging.SingleEmailMessage[]
+                {mail}
+            );
+
+            System.debug(
+                'Email with attachment sent successfully!'
+            );
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error: ' + e.getMessage()
+            );
+        }
+    }
+}
