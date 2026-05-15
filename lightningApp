@@ -1,0 +1,780 @@
+# 23. Lightning Web Application
+
+# CC Practical — College Management Lightning Application
+
+## Aim
+
+To develop a College Management Lightning Application in Salesforce to manage Student and Faculty records with validation rules for ensuring data accuracy.
+
+---
+
+# Requirements
+
+## Student Validations
+
+- Marks should be between 0 and 100
+- Roll number must be greater than 0
+- Email must contain `@`
+- Student name cannot be blank
+
+---
+
+## Faculty Validations
+
+- Faculty name must contain at least 3 characters
+- Faculty ID must be greater than 0 and unique
+- Salary must be between 10,000 and 500,000
+- Department must be selected
+- Joining date cannot be future date
+
+---
+
+# PART 1 — Create Student Object
+
+## Navigation
+
+```
+Setup → Object Manager → Create → Custom Object
+```
+
+---
+
+## Fill Details
+
+| Field | Value |
+| --- | --- |
+| Label | Student |
+| Plural Label | Students |
+| Object Name | Student |
+| Record Name | Student Name |
+
+Tick:
+
+✅ Allow Reports
+
+✅ Allow Activities
+
+Click:
+
+```
+Save
+```
+
+---
+
+# PART 2 — Create Student Fields
+
+## Navigation
+
+```
+Object Manager → Student → Fields & Relationships → New
+```
+
+---
+
+## Field 1 — Roll Number
+
+| Property | Value |
+| --- | --- |
+| Data Type | Number |
+| Label | Roll_Number |
+
+Tick:
+
+✅ Required
+
+Click Save.
+
+---
+
+## Field 2 — Marks
+
+| Property | Value |
+| --- | --- |
+| Data Type | Number |
+| Label | Marks |
+| Decimal Places | 0 |
+
+Save.
+
+---
+
+## Field 3 — Email
+
+| Property | Value |
+| --- | --- |
+| Data Type | Email |
+| Label | Email |
+
+Save.
+
+---
+
+## Field 4 — Department
+
+| Property | Value |
+| --- | --- |
+| Data Type | Picklist |
+| Label | Department |
+
+Enter Values:
+
+```
+Computer
+IT
+ENTC
+Mechanical
+Civil
+```
+
+Save.
+
+---
+
+# PART 3 — Student Validation Rules
+
+## Navigation
+
+```
+Object Manager → Student → Validation Rules → New
+```
+
+---
+
+# Validation 1 — Marks Validation
+
+## Rule Name
+
+```
+Marks_Validation
+```
+
+## Formula
+
+```
+OR(
+    Marks__c < 0,
+    Marks__c > 100
+)
+```
+
+## Error Message
+
+```
+Marks should be between 0 and 100
+```
+
+Click Save.
+
+---
+
+# Validation 2 — Roll Number Validation
+
+## Rule Name
+
+```
+RollNumber_Validation
+```
+
+## Formula
+
+```
+Roll_Number__c <= 0
+```
+
+## Error Message
+
+```
+Roll number must be greater than 0
+```
+
+Save.
+
+---
+
+# Validation 3 — Student Name Validation
+
+## Rule Name
+
+```
+StudentName_Validation
+```
+
+## Formula
+
+```
+ISBLANK(Name)
+```
+
+## Error Message
+
+```
+Student name cannot be blank
+```
+
+Save.
+
+---
+
+# Validation 4 — Email Validation
+
+## Rule Name
+
+```
+Email_Validation
+```
+
+## Formula
+
+```
+NOT(CONTAINS(Email__c, "@"))
+```
+
+## Error Message
+
+```
+Email must contain @ symbol
+```
+
+Save.
+
+---
+
+# PART 4 — Create Faculty Object
+
+## Navigation
+
+```
+Setup → Object Manager → Create → Custom Object
+```
+
+---
+
+## Fill Details
+
+| Field | Value |
+| --- | --- |
+| Label | Faculty |
+| Plural Label | Faculties |
+| Object Name | Faculty |
+| Record Name | Faculty Name |
+
+Click Save.
+
+---
+
+# PART 5 — Create Faculty Fields
+
+## Navigation
+
+```
+Object Manager → Faculty → Fields & Relationships → New
+```
+
+---
+
+# Field 1 — Faculty ID
+
+| Property | Value |
+| --- | --- |
+| Data Type | Number |
+| Label | Faculty_ID |
+
+Tick:
+
+✅ Required
+
+✅ Unique
+
+Save.
+
+---
+
+# Field 2 — Salary
+
+| Property | Value |
+| --- | --- |
+| Data Type | Currency |
+| Label | Salary |
+
+Save.
+
+---
+
+# Field 3 — Department
+
+| Property | Value |
+| --- | --- |
+| Data Type | Picklist |
+| Label | Department |
+
+Values:
+
+```
+Computer
+IT
+ENTC
+Mechanical
+Civil
+```
+
+Save.
+
+---
+
+# Field 4 — Joining Date
+
+| Property | Value |
+| --- | --- |
+| Data Type | Date |
+| Label | Joining_Date |
+
+Save.
+
+---
+
+# PART 6 — Faculty Validation Rules
+
+## Navigation
+
+```
+Object Manager → Faculty → Validation Rules → New
+```
+
+---
+
+# Validation 1 — Faculty Name Validation
+
+## Rule Name
+
+```
+FacultyName_Validation
+```
+
+## Formula
+
+```
+LEN(Name) < 3
+```
+
+## Error Message
+
+```
+Faculty name must contain at least 3 characters
+```
+
+Save.
+
+---
+
+# Validation 2 — Faculty ID Validation
+
+## Rule Name
+
+```
+FacultyID_Validation
+```
+
+## Formula
+
+```
+Faculty_ID__c <= 0
+```
+
+## Error Message
+
+```
+Faculty ID must be greater than 0
+```
+
+Save.
+
+---
+
+# Validation 3 — Salary Validation
+
+## Rule Name
+
+```
+Salary_Validation
+```
+
+## Formula
+
+```
+OR(
+    Salary__c <= 10000,
+    Salary__c >= 500000
+)
+```
+
+## Error Message
+
+```
+Salary must be between 10,000 and 500,000
+```
+
+Save.
+
+---
+
+# Validation 4 — Joining Date Validation
+
+## Rule Name
+
+```
+JoiningDate_Validation
+```
+
+## Formula
+
+```
+Joining_Date__c > TODAY()
+```
+
+## Error Message
+
+```
+Joining date cannot be future date
+```
+
+Save.
+
+---
+
+# PART 7 — Create Tabs for Objects
+
+Without tabs, objects will not appear in Lightning App.
+
+---
+
+## Create Student Tab
+
+### Navigation
+
+```
+Setup → Tabs
+```
+
+Under:
+
+```
+Custom Object Tabs
+```
+
+Click:
+
+```
+New
+```
+
+---
+
+### Fill Details
+
+| Field | Value |
+| --- | --- |
+| Object | Student |
+| Tab Style | Choose any icon |
+
+Click:
+
+```
+Next → Next → Save
+```
+
+---
+
+## Create Faculty Tab
+
+Repeat same steps.
+
+Choose:
+
+```
+Faculty
+```
+
+Save.
+
+---
+
+# PART 8 — Create Lightning App
+
+## Navigation
+
+```
+Setup → App Manager → New Lightning App
+```
+
+---
+
+## Step 1 — App Details
+
+| Field | Value |
+| --- | --- |
+| App Name | College Management System |
+
+Click:
+
+```
+Next
+```
+
+---
+
+## Step 2
+
+Keep default settings.
+
+Click:
+
+```
+Next
+```
+
+---
+
+## Step 3 — Utility Items
+
+Skip.
+
+Click:
+
+```
+Next
+```
+
+---
+
+## Step 4 — Navigation Items
+
+Now search and add:
+
+✅ Students
+
+✅ Faculties
+
+Move them to:
+
+```
+Selected Items
+```
+
+using right arrow.
+
+Click:
+
+```
+Next
+```
+
+---
+
+## Step 5 — User Profiles
+
+Select:
+
+✅ System Administrator
+
+Click:
+
+```
+Save & Finish
+```
+
+---
+
+# PART 9 — Open Lightning App
+
+## Navigation
+
+Click:
+
+```
+App Launcher (9 dots)
+```
+
+Search:
+
+```
+College Management System
+```
+
+Open it.
+
+---
+
+# PART 10 — Testing Student Validations
+
+Open:
+
+```
+Students Tab
+```
+
+Click:
+
+```
+New
+```
+
+---
+
+## Test Cases
+
+### Invalid Marks
+
+```
+150
+```
+
+Expected:
+
+```
+Marks should be between 0 and 100
+```
+
+---
+
+### Invalid Roll Number
+
+```
+-5
+```
+
+Expected:
+
+```
+Roll number must be greater than 0
+```
+
+---
+
+### Invalid Email
+
+```
+rahulgmail.com
+```
+
+Expected:
+
+```
+Email must contain @ symbol
+```
+
+---
+
+# PART 11 — Testing Faculty Validations
+
+Open:
+
+```
+Faculty Tab
+```
+
+Click:
+
+```
+New
+```
+
+---
+
+## Test Cases
+
+### Invalid Name
+
+```
+AB
+```
+
+Expected:
+
+```
+Faculty name must contain at least 3 characters
+```
+
+---
+
+### Invalid Salary
+
+```
+8000
+```
+
+Expected:
+
+```
+Salary must be between 10,000 and 500,000
+```
+
+---
+
+### Future Joining Date
+
+Choose future date.
+
+Expected:
+
+```
+Joining date cannot be future date
+```
+
+---
+
+### Duplicate Faculty ID
+
+Insert same Faculty ID twice.
+
+Expected:
+
+```
+duplicate value found
+```
+
+---
+
+# Screenshots for Journal
+
+Take screenshots of:
+
+✅ Student Object
+
+✅ Faculty Object
+
+✅ Validation Rules
+
+✅ Tabs
+
+✅ Lightning App
+
+✅ Validation Errors
+
+✅ Successful Record Creation
+
+---
+
+# Viva Questions
+
+### What is a Validation Rule?
+
+Used to validate data before saving records.
+
+### Why use Picklist?
+
+To restrict user input to predefined values.
+
+### What is a Lightning App?
+
+A custom application in Salesforce for managing related objects.
+
+### Why use Unique fields?
+
+To prevent duplicate records.
+
+---
+
+# Result
+
+Successfully developed a College Management Lightning Application in Salesforce with validation rules for maintaining accurate Student and Faculty records.

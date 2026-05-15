@@ -1,0 +1,251 @@
+public class BankAccountSystem {
+    
+    private static void displayOneCustomer(Customer__c cus){
+
+        System.debug(
+            'Customer ID: ' + cus.Customer_Id__c +
+            ' Name: ' + cus.Name +
+            ' Email: ' + cus.Email__c +
+            ' Birth Date: ' + cus.Birth_Date__c +
+            ' Department: ' + cus.Department__c + '\n'
+        );
+    }
+    
+
+    public static void addCustomer(
+
+        Integer customerId,
+        String name,
+        String email,
+        Date birthDate,
+        String department
+    ){
+
+        try{
+
+            Customer__c cus = new Customer__c();
+
+            cus.Customer_Id__c = customerId;
+            cus.Name = name;
+            cus.Email__c = email;
+            cus.Birth_Date__c = birthDate;
+            cus.Department__c = department;
+
+            insert cus;
+
+            System.debug(
+                'Customer data added successfully!!'
+            );
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while adding customer! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    // Display All Customers
+
+    public static void displayCustomers(){
+
+        try{
+
+            List<Customer__c> customerList = [
+
+                SELECT Id,
+                       Customer_Id__c,
+                       Name,
+                       Email__c,
+                       Birth_Date__c,
+                       Department__c
+                FROM Customer__c
+            ];
+
+            if(customerList.size() == 0){
+
+                System.debug(
+                    'No customer data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    customerList.size() +
+                    ' Customers Found!'
+                );
+
+                for(Customer__c cus : customerList){
+
+                    displayOneCustomer(cus);
+                }
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while fetching customers! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    // Search Customer
+
+    public static void searchCustomer(Integer customerId){
+
+        try{
+
+            List<Customer__c> customerList = [
+
+                SELECT Id,
+                       Customer_Id__c,
+                       Name,
+                       Email__c,
+                       Birth_Date__c,
+                       Department__c
+                FROM Customer__c
+                WHERE Customer_Id__c = :customerId
+                LIMIT 1
+            ];
+
+            if(customerList.size() == 0){
+
+                System.debug(
+                    'No customer data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Customer Found!'
+                );
+
+                displayOneCustomer(customerList[0]);
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while searching customer! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    // Delete Customer
+
+    public static void deleteCustomer(Integer customerId){
+
+        try{
+
+            List<Customer__c> customerList = [
+
+                SELECT Id,
+                       Customer_Id__c,
+                       Name,
+                       Email__c,
+                       Birth_Date__c,
+                       Department__c
+                FROM Customer__c
+                WHERE Customer_Id__c = :customerId
+                LIMIT 1
+            ];
+
+            if(customerList.size() == 0){
+
+                System.debug(
+                    'No customer data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Customer Found!'
+                );
+
+                delete customerList[0];
+
+                System.debug(
+                    'Customer deleted successfully!'
+                );
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while deleting customer! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    // Update Customer
+
+    public static void updateCustomer(
+
+        Integer customerId,
+        String name,
+        String email,
+        Date birthDate,
+        String department
+    ){
+
+        try{
+
+            List<Customer__c> customerList = [
+
+                SELECT Id,
+                       Customer_Id__c,
+                       Name,
+                       Email__c,
+                       Birth_Date__c,
+                       Department__c
+                FROM Customer__c
+                WHERE Customer_Id__c = :customerId
+                LIMIT 1
+            ];
+
+            if(customerList.size() == 0){
+
+                System.debug(
+                    'No customer data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Customer Found!'
+                );
+
+                customerList[0].Name = name;
+                customerList[0].Email__c = email;
+                customerList[0].Birth_Date__c = birthDate;
+                customerList[0].Department__c = department;
+
+                update customerList[0];
+
+                System.debug(
+                    'Customer data updated successfully!'
+                );
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while updating customer! '
+                + e.getMessage()
+            );
+        }
+    }
+}

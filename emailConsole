@@ -1,0 +1,70 @@
+public class EmailConsole {
+
+    // Send Email Method
+    public static void sendEmail(
+
+        String toEmail,
+
+        String subject,
+
+        String body
+    ) {
+
+        try {
+
+            // Validate Email
+            if(
+                toEmail == null ||
+
+                !Pattern.matches(
+                    '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$',
+                    toEmail
+                )
+            ) {
+
+                System.debug(
+                    'Invalid Email Address'
+                );
+
+                return;
+            }
+
+            // Create Email Object
+            Messaging.SingleEmailMessage mail =
+
+                new Messaging.SingleEmailMessage();
+
+            // Set Recipient
+            mail.setToAddresses(
+
+                new List<String>{toEmail}
+            );
+
+            // Set Subject
+            mail.setSubject(subject);
+
+            // Set Body
+            mail.setPlainTextBody(body);
+
+            // Send Email
+            Messaging.sendEmail(
+
+                new Messaging.SingleEmailMessage[] {mail}
+            );
+
+            System.debug(
+                'Email Sent Successfully'
+            );
+        }
+
+        catch(Exception e) {
+
+            System.debug(
+
+                'Error: ' +
+
+                e.getMessage()
+            );
+        }
+    }
+}

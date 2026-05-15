@@ -1,0 +1,242 @@
+public class EmployeeManagementSystem {
+
+    private static void displayOneEmployee(Employee__c emp){
+
+        System.debug(
+            'Employee ID: ' + emp.Emp_Id__c +
+            ' Name: ' + emp.Name +
+            ' Birth Date: ' + emp.dob__c +
+            ' Department: ' + emp.department__c +
+            ' Email: ' + emp.Email__c + '\n'
+        );
+    }
+
+    public static void addEmployee(
+
+        Integer empId,
+        String name,
+        Date dob,
+        String department,
+        String email
+    ){
+
+        try{
+
+            Employee__c emp = new Employee__c();
+
+            emp.Emp_Id__c = empId;
+            emp.Name = name;
+            emp.Department__c = department;
+            emp.dob__c = dob;
+            emp.Email__c = email;
+
+            insert emp;
+
+            System.debug(
+                'Employee data added successfully!!'
+            );
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while adding the employee!'
+                + e.getMessage()
+            );
+        }
+    }
+
+    public static void displayEmployee(){
+
+        try{
+
+            List<Employee__c> empList = [
+
+                SELECT Id,
+                       Emp_Id__c,
+                       Name,
+                       Department__c,
+                       dob__c,
+                       Email__c
+                FROM Employee__c
+            ];
+
+            if(empList.size() == 0){
+
+                System.debug(
+                    'No employee data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    empList.size() +
+                    ' Employees Found!'
+                );
+
+                for(Employee__c emp : empList){
+
+                    displayOneEmployee(emp);
+                }
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while fetching all the employees! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    public static void searchEmployee(Integer EmpId){
+
+        try{
+
+            List<Employee__c> empList = [
+
+                SELECT Id,
+                       Emp_Id__c,
+                       Name,
+                       Department__c,
+                       dob__c,
+                       Email__c
+                FROM Employee__c
+                WHERE Emp_Id__c = :EmpId
+                LIMIT 1
+            ];
+
+            if(empList.size() == 0){
+
+                System.debug(
+                    'No employee data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Employees Found!'
+                );
+
+                displayOneEmployee(empList[0]);
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while searching the employee! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    public static void deleteEmployee(Integer EmpId){
+
+        try{
+
+            List<Employee__c> empList = [
+
+                SELECT Id,
+                       Emp_Id__c,
+                       Name,
+                       Department__c,
+                       dob__c,
+                       Email__c
+                FROM Employee__c
+                WHERE Emp_Id__c = :EmpId
+                LIMIT 1
+            ];
+
+            if(empList.size() == 0){
+
+                System.debug(
+                    'No employee data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Employee Found!'
+                );
+
+                delete empList[0];
+
+                System.debug(
+                    'Employee data deleted successfully!'
+                );
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while deleting the employee! '
+                + e.getMessage()
+            );
+        }
+    }
+
+    public static void updateEmployee(
+
+        Integer EmpId,
+        String name,
+        Date dob,
+        String department,
+        String email
+    ){
+
+        try{
+
+            List<Employee__c> empList = [
+
+                SELECT Id,
+                       Emp_Id__c,
+                       Name,
+                       Department__c,
+                       dob__c,
+                       Email__c
+                FROM Employee__c
+                WHERE Emp_Id__c = :EmpId
+                LIMIT 1
+            ];
+
+            if(empList.size() == 0){
+
+                System.debug(
+                    'No employee data found!'
+                );
+            }
+
+            else{
+
+                System.debug(
+                    'Employee Found!'
+                );
+
+                empList[0].Name = name;
+                empList[0].dob__c = dob;
+                empList[0].Department__c = department;
+                empList[0].Email__c = email;
+
+                update empList[0];
+
+                System.debug(
+                    'Employee data updated successfully!'
+                );
+            }
+        }
+
+        catch(Exception e){
+
+            System.debug(
+                'Error while updating the employee! '
+                + e.getMessage()
+            );
+        }
+    }
+}

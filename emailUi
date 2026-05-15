@@ -1,0 +1,75 @@
+public class EmailController {
+    public String toemail {get; set;}
+    public String body {get; set;}
+    public String subject {get; set;}
+    public Blob filebody {get; set;}
+    public String filename {get; set;}
+    
+    public void sendEmail(){
+        try{
+            String pat = '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$';
+            if(toemail == null || !Pattern.matches(pat , toemail)){
+                ApexPages.addMessage(
+                	new ApexPages.message(
+                    	ApexPages.Severity.ERROR , 
+                        'Email Id is invalid!'
+                    )
+                );
+                return ;
+            }
+            
+            Messaging.singleEmailMessage email = new Messaging.singleEmailMessage();
+            email.setToAddresses(new List<String> {toemail});
+            email.setPlainTextBody(body);
+            email.setSubject(subject);
+            
+            if(filebody != null){
+                Messaging.EmailFileAttachment attachment = new Messaging.EmailFileAttachment();
+               	attachment.setFileName(filename);
+                attachment.setBody(filebody);
+                
+                email.setFileAttachments(new Messaging.EmailFileAttachment[] {attachment});
+            }
+            
+            Messaging.sendEmail(new Messaging.singleEmailMessage[] {email});
+            
+            ApexPages.addMessage(
+            	new ApexPages.message(
+                	ApexPages.Severity.CONFIRM,
+                    'Email send to the designated reciever succesfully!'
+                )
+            );
+        }
+        catch(Exception e){
+            ApexPages.addMessage(
+            	new ApexPages.message(
+                	ApexPages.Severity.ERROR , 
+                    'Error while sending the email!' + e.getMessage()
+                )
+            );
+        }
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+<apex:page controller="EmailController">
+    <apex:form enctype = "multipart/form-data">
+    	<h1>
+            Email Sender System
+        </h1>
+        <apex:pageMessages id = "msg"/>
+        <apex:pageBlock title = "Send Email">
+        	<apex:pageBlockSection columns = "1">
+                <apex:inputText value="{!toemail}" label="Reciever Email"/>
+                <apex:inputText value="{!subject}" label="Subject"/>
+                <apex:inputTextarea value="{!body}" label="Message Body"/>
+                <apex:inputFile value="{!filebody}" fileName = "{!filename}" />
+                <apex:CommandButton value="Send Email" action="{!sendEmail}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,80 @@
+public class StudentController {
+    public Student1__c student {get; set;}
+    public List<Student1__c> StudentList {get;  set;}
+    
+    public StudentController(){
+        student = new Student1__c();
+        loadStudent();
+    }
+    
+    public void loadStudent(){
+        StudentList = [SELECT Id , Name , Phone_No__c , Roll_No__c , Class__c FROM Student1__c];
+    }
+    
+    public void insertStudent(){
+        if(student.id == null){
+            insert student;
+        }
+        else {
+            update student;
+        }
+        student = new Student1__c();
+        loadStudent();
+    }
+    
+    public void deleteStudent(){
+        String studentId = ApexPages.currentPage().getParameters().get('Id');
+        Student1__c s = [Select Id FROM Student1__c where Id = :studentId LIMIT 1];
+        delete s;
+        loadStudent();
+    }
+    
+    public void editStudent(){
+        String studentId = ApexPages.currentPage().getParameters().get('Id');
+        student = [select Id , Name , Roll_No__c , Phone_No__c , Class__c from Student1__c where Id = :studentId Limit 1];
+        loadStudent();
+    }
+}
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+
+
+<apex:page controller="StudentController">
+	<apex:form>
+    	<h1>
+            Student Management System
+        </h1>
+        <apex:pageBlock title="Add Student" id="StudentForm">
+            <apex:pageBlockSection columns = "1">
+                <apex:inputText value="{!student.Name}" label="Name"/>
+                <apex:inputText value="{!student.Phone_No__c}" label="Mobile Number"/>
+                <apex:inputText value="{!student.Roll_No__c}" label="Roll Number"/>
+                <apex:inputText value="{!student.Class__c}" label="Class"/>
+                <apex:commandButton action="{!insertStudent}" value ="Add Student" rerender = "StudentTable,StudentForm" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>        
+        
+        <apex:pageBlock title = "Student Records" id = "StudentTable">
+        	<apex:pageBlockTable value = "{!StudentList}"  var="s" >
+                <apex:column value="{!s.Name}" headerValue="Name" />
+            	<apex:column value="{!s.Phone_No__c}" headerValue="Mobile Number" />
+                <apex:column value="{!s.Roll_No__c}" headerValue="Roll Number" />
+                <apex:column value="{!s.Class__c}" headerValue="Class" />
+                <apex:column headerValue="Actions" >
+                    <apex:commandLink value="edit" action="{!editStudent}" rerender="StudentTable,StudentForm">
+                        <apex:param name="id" value = "{!s.Id}" />
+                    </apex:commandLink>
+                    
+                     &nbsp; | &nbsp;
+                    <apex:commandLink value="delete" action="{!deleteStudent}" rerender="StudentTable">
+                        <apex:param name="id" value = "{!s.Id}" />
+                    </apex:commandLink>
+                    
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

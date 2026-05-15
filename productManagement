@@ -1,0 +1,86 @@
+public class ProductController {
+    public Product__c product {get; set;}
+    public List<Product__c> productList {get; set;}
+    
+    public ProductController(){
+        product = new Product__c();
+        loadProduct();
+    }
+    
+    public void addProduct(){
+        if(product.Id == null){
+            insert product;
+        }
+        else {
+            update product;
+        }
+        product = new Product__c();
+        loadProduct();
+        
+        ApexPages.addMessage(
+        new ApexPages.Message(
+        	ApexPages.Severity.CONFIRM,
+            'Product added successfully!!'
+        	)
+        );
+    }
+    
+    public void loadProduct(){
+        productList = [select Id , Name , Serial_No__c , Manu_Date__c , Exp_Date__c from Product__c]; 
+    }
+    
+    public void deleteProduct(){
+        String productId = ApexPages.currentPage().getParameters().get('Id');
+        Product__c pro = [select Id from Product__c where Id = :ProductId limit 1];
+        delete pro;
+        loadProduct();
+    }
+    
+    public void editProduct(){
+        String productId = ApexPages.currentPage().getParameters().get('Id');
+        product = [select Id , Name , Serial_No__c , Manu_Date__c , Exp_Date__c from Product__c where Id = :ProductId limit 1]; 
+        loadProduct();
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+
+<apex:page controller="ProductController" >
+    <apex:form>
+        <apex:pageMessages id = "msg" />
+    	<h1>
+            Inventory Management System!!!
+        </h1>
+        <apex:pageBlock title="Add Products" id = "ProductForm">
+            <apex:PageBlockSection columns="1" >
+                <apex:inputText value="{!product.Name}" label="Name" />
+                <apex:inputText value="{!product.Serial_No__c}" label="Serial Number" />
+                <apex:inputField value="{!product.Manu_Date__c}" label="Manufacture Date" />
+                <apex:inputField value="{!product.Exp_Date__c}" label="Expiry Date" />
+                <apex:commandButton value="Add Product" action="{!addProduct}" rerender = "ProductForm,ProductTable,msg" />
+            </apex:PageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Product Records" id = "ProductTable">
+        	<apex:pageBlockTable value="{!productList}" var="p" >
+            	<apex:column value = "{!p.Name}" headerValue = "Product Name" />
+                <apex:column value = "{!p.Serial_No__c}" headerValue = "Product Serial Number" />
+                <apex:column value = "{!p.Manu_Date__c}" headerValue = "Product Manufacture Date" />
+                <apex:column value = "{!p.Exp_Date__c}" headerValue = "Product Expiry Date" />
+                <apex:column  headerValue = "Actions">
+                   	<apex:commandLink value="Edit" action="{!editProduct}" rerender="ProductForm,ProductTable,msg">
+                        <apex:param name="Id" value="{!p.Id}"/>
+                    </apex:commandLink>
+                    &nbsp; | &nbsp;
+                    <apex:commandLink value="Delete" action="{!deleteProduct}" rerender="ProductForm,ProductTable,msg">
+                        <apex:param name="Id" value="{!p.Id}"/>
+                    </apex:commandLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>
