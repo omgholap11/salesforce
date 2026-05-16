@@ -1,0 +1,429 @@
+=========================================================
+CLOUD ASSIGNMENT
+SECURE FILE SHARING BETWEEN CLOUD INSTANCES
+USING AZURE LINUX VIRTUAL MACHINES
+==================================
+
+=========================================================
+STEP 1 : CREATE RESOURCE GROUP
+==============================
+
+Azure Portal → Search:
+Resource Groups
+
+Click:
+Create
+
+Configuration:
+
+Resource Group Name:
+cloud-rg
+
+Region:
+Central India
+
+Purpose:
+Resource Group stores and manages all Azure resources together.
+
+=========================================================
+STEP 2 : CREATE VIRTUAL NETWORK
+===============================
+
+Azure Portal → Search:
+Virtual Networks
+
+Click:
+Create
+
+Configuration:
+
+Resource Group:
+cloud-rg
+
+Virtual Network Name:
+cloud-vnet
+
+Region:
+Central India
+
+IPv4 Address Space:
+10.0.0.0/16
+
+Subnet Name:
+default
+
+Subnet Address Range:
+10.0.0.0/24
+
+Purpose:
+Creates private internal network for communication between VMs.
+
+=========================================================
+STEP 3 : CREATE VM1
+===================
+
+Azure Portal → Search:
+Virtual Machines
+
+Click:
+Create → Azure Virtual Machine
+
+Configuration:
+
+Resource Group:
+cloud-rg
+
+VM Name:
+vm1
+
+Region:
+Central India
+
+Image:
+Ubuntu Server 22.04 LTS
+
+Size:
+Standard_B1s
+
+Authentication Type:
+SSH Public Key
+
+Username:
+azureuser
+
+Inbound Ports:
+Allow SSH (22)
+
+Networking:
+
+Virtual Network:
+cloud-vnet
+
+Subnet:
+default
+
+Generate and Download:
+vm1_key.pem
+
+Click:
+Review + Create
+
+Then:
+Create
+
+=========================================================
+STEP 4 : CREATE VM2
+===================
+
+Create another VM.
+
+Configuration:
+
+Resource Group:
+cloud-rg
+
+VM Name:
+vm2
+
+Region:
+Central India
+
+Image:
+Ubuntu Server 22.04 LTS
+
+Size:
+Standard_B1s
+
+Authentication Type:
+SSH Public Key
+
+Username:
+azureuser
+
+Inbound Ports:
+Allow SSH (22)
+
+Networking:
+
+Virtual Network:
+cloud-vnet
+
+Subnet:
+default
+
+Generate and Download:
+vm2_key.pem
+
+Click:
+Review + Create
+
+Then:
+Create
+
+=========================================================
+ARCHITECTURE
+============
+
+```
+         Azure Virtual Network
+             (cloud-vnet)
+
+     --------------------------------
+     |                              |
+     |                              |
+  VM1                             VM2
+```
+
+Private IP                     Private IP
+10.0.0.4                       10.0.0.5
+
+VM1 and VM2 communicate securely using:
+
+1. SSH
+2. SCP
+3. Private IP Addresses
+
+=========================================================
+STEP 5 : CONNECT TO VM1
+=======================
+
+Command:
+chmod 400 vm1_key.pem
+
+Purpose:
+Provides secure permission to SSH private key.
+
+Command:
+ssh -i vm1_key.pem azureuser@VM1_PUBLIC_IP
+
+Example:
+ssh -i vm1_key.pem [azureuser@20.xx.xx.xx](mailto:azureuser@20.xx.xx.xx)
+
+Purpose:
+Connects securely to VM1.
+
+=========================================================
+STEP 6 : CONNECT TO VM2
+=======================
+
+Open another terminal.
+
+Command:
+chmod 400 vm2_key.pem
+
+Command:
+ssh -i vm2_key.pem azureuser@VM2_PUBLIC_IP
+
+Purpose:
+Connects securely to VM2.
+
+=========================================================
+STEP 7 : GET PRIVATE IP OF VM2
+==============================
+
+Inside VM2:
+
+Command:
+hostname -I
+
+Example Output:
+10.0.0.5
+
+Purpose:
+Gets private internal IP address of VM2.
+
+=========================================================
+STEP 8 : TEST COMMUNICATION
+===========================
+
+Inside VM1:
+
+Command:
+ping VM2_PRIVATE_IP
+
+Example:
+ping 10.0.0.5
+
+Purpose:
+Checks communication between both virtual machines.
+
+Stop:
+CTRL + C
+
+=========================================================
+STEP 9 : CREATE SAMPLE FILE IN VM1
+==================================
+
+Inside VM1:
+
+Command:
+nano sample.txt
+
+Paste:
+
+This file was transferred securely between Azure cloud instances.
+
+Save:
+CTRL + O
+Enter
+CTRL + X
+
+Purpose:
+Creates sample file for secure transfer.
+
+=========================================================
+STEP 10 : COPY VM2 KEY INTO VM1
+===============================
+
+Run this command from LOCAL MACHINE:
+
+Command:
+scp -i vm1_key.pem vm2_key.pem azureuser@VM1_PUBLIC_IP:/home/azureuser/
+
+Example:
+scp -i vm1_key.pem vm2_key.pem [azureuser@20.xx.xx.xx](mailto:azureuser@20.xx.xx.xx):/home/azureuser/
+
+Purpose:
+Copies VM2 SSH key into VM1 for authentication.
+
+=========================================================
+STEP 11 : GIVE PERMISSION TO VM2 KEY
+====================================
+
+Inside VM1:
+
+Command:
+chmod 400 vm2_key.pem
+
+Purpose:
+Provides secure permission to VM2 SSH key.
+
+=========================================================
+STEP 12 : TRANSFER FILE SECURELY
+================================
+
+Inside VM1:
+
+Command:
+scp -i vm2_key.pem sample.txt azureuser@VM2_PRIVATE_IP:/home/azureuser/
+
+Example:
+scp -i vm2_key.pem sample.txt azureuser@10.0.0.5:/home/azureuser/
+
+Purpose:
+Transfers file securely from VM1 to VM2 using SCP.
+
+=========================================================
+STEP 13 : VERIFY FILE IN VM2
+============================
+
+Inside VM2:
+
+Command:
+ls
+
+Purpose:
+Displays transferred files.
+
+Command:
+cat sample.txt
+
+Purpose:
+Displays file contents transferred from VM1.
+
+=========================================================
+STEP 14 : SET SECURE FILE PERMISSIONS
+=====================================
+
+Inside VM2:
+
+Command:
+chmod 600 sample.txt
+
+Purpose:
+Allows only owner to read and write file.
+
+VERIFY:
+
+Command:
+ls -l
+
+Expected Output:
+-rw-------
+
+=========================================================
+IMPORTANT COMMANDS
+==================
+
+SSH Connection:
+ssh -i key.pem azureuser@PUBLIC_IP
+
+Get Private IP:
+hostname -I
+
+Check Communication:
+ping PRIVATE_IP
+
+Create File:
+nano sample.txt
+
+Transfer File:
+scp -i key.pem sample.txt azureuser@PRIVATE_IP:/home/azureuser/
+
+View Files:
+ls
+
+Read File:
+cat sample.txt
+
+Set Permissions:
+chmod 600 sample.txt
+
+=========================================================
+IMPORTANT CONCEPTS
+==================
+
+SSH:
+Secure protocol used for remote login.
+
+SCP:
+Secure Copy Protocol used for encrypted file transfer.
+
+Virtual Network:
+Private Azure network connecting cloud resources.
+
+Private IP:
+Internal IP used for communication between VMs.
+
+chmod 600:
+Restricts file access to owner only.
+
+=========================================================
+AZURE NETWORK REQUIREMENTS
+==========================
+
+Allow Inbound Port:
+
+Port:
+22
+
+Protocol:
+TCP
+
+Purpose:
+SSH communication
+
+=========================================================
+FINAL OUTCOME
+=============
+
+Successfully:
+
+1. Created Resource Group
+2. Created Virtual Network
+3. Created Two Linux Virtual Machines
+4. Connected VMs Securely
+5. Tested Internal Communication
+6. Transferred Files Securely Using SCP
+7. Configured Secure File Permissions
+   =========================================================

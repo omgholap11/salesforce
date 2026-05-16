@@ -1,0 +1,256 @@
+========================================
+CLOUD ASSIGNMENT - STATIC WEBSITE HOSTING
+USING NGINX ON AZURE LINUX VM
+=============================
+
+## STEP 1 : GIVE PERMISSION TO PEM KEY
+
+Command:
+chmod 400 vm1_key.pem
+
+Purpose:
+Provides secure read-only permission to the private SSH key file.
+
+## STEP 2 : CONNECT TO AZURE VIRTUAL MACHINE
+
+Command:
+ssh -i vm1_key.pem azureuser@YOUR_PUBLIC_IP
+
+Example:
+ssh -i vm1_key.pem azureuser@20.2.83.37
+
+Purpose:
+Connects remotely to the Azure Linux Virtual Machine using SSH.
+
+## STEP 3 : UPDATE LINUX PACKAGES
+
+Command:
+sudo apt update
+
+Purpose:
+Updates package repository information from Ubuntu servers.
+
+## STEP 4 : UPGRADE INSTALLED PACKAGES
+
+Command:
+sudo apt upgrade -y
+
+Purpose:
+Upgrades all installed Linux packages to latest versions.
+
+## STEP 5 : INSTALL NGINX WEB SERVER
+
+Command:
+sudo apt install nginx -y
+
+Purpose:
+Installs Nginx web server on the Ubuntu VM.
+
+## STEP 6 : START NGINX SERVICE
+
+Command:
+sudo systemctl start nginx
+
+Purpose:
+Starts the Nginx web server service.
+
+## STEP 7 : ENABLE NGINX AUTO START
+
+Command:
+sudo systemctl enable nginx
+
+Purpose:
+Ensures Nginx automatically starts whenever VM reboots.
+
+## STEP 8 : CHECK NGINX STATUS
+
+Command:
+sudo systemctl status nginx
+
+Purpose:
+Verifies whether Nginx service is running properly.
+
+Expected Output:
+active (running)
+
+Press:
+q
+
+to exit the status screen.
+
+## STEP 9 : MOVE TO WEBSITE DIRECTORY
+
+Command:
+cd /var/www/html
+
+Purpose:
+Moves into the default website hosting directory of Nginx.
+
+## STEP 10 : REMOVE DEFAULT NGINX PAGE
+
+Command:
+sudo rm index.nginx-debian.html
+
+Purpose:
+Deletes the default Nginx welcome page.
+
+## STEP 11 : CREATE WEBSITE FILE
+
+Command:
+sudo nano index.html
+
+Purpose:
+Creates and opens the main webpage file.
+
+## STEP 12 : PASTE HTML CODE
+
+Paste the following code inside index.html
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Azure Cloud Website</title>
+
+```
+<style>
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        font-family:Arial, sans-serif;
+        background:linear-gradient(to right,#0078D7,#00B4DB);
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        color:white;
+    }
+
+    .container{
+        text-align:center;
+        background:rgba(255,255,255,0.1);
+        padding:50px;
+        border-radius:15px;
+        width:70%;
+    }
+
+    h1{
+        font-size:50px;
+        margin-bottom:20px;
+    }
+
+    p{
+        font-size:22px;
+        margin-bottom:15px;
+    }
+
+    .footer{
+        margin-top:30px;
+        font-size:18px;
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="container">
+
+    <h1>Welcome to My Cloud Website</h1>
+
+    <p>Static Website Hosted on Azure Linux Virtual Machine</p>
+
+    <p>Web Server : Nginx</p>
+
+    <p>Configured Using SSH and Ubuntu Linux</p>
+
+    <div class="footer">
+        Cloud Computing Assignment
+    </div>
+
+</div>
+```
+
+</body>
+
+</html>
+
+## STEP 13 : SAVE FILE
+
+Press:
+CTRL + O
+
+Press:
+Enter
+
+Press:
+CTRL + X
+
+Purpose:
+Saves and exits the nano editor.
+
+## STEP 14 : RESTART NGINX
+
+Command:
+sudo systemctl restart nginx
+
+Purpose:
+Reloads Nginx server with updated website changes.
+
+## STEP 15 : OPEN WEBSITE IN BROWSER
+
+Open:
+
+http://YOUR_PUBLIC_IP
+
+Example:
+
+http://20.2.83.37
+
+Purpose:
+Accesses the publicly hosted static website from the internet.
+
+========================================
+AZURE NETWORK CONFIGURATION
+===========================
+
+In Azure Portal:
+
+VM → Networking
+
+Allow Inbound Ports:
+
+1. Port 22 → SSH
+2. Port 80 → HTTP
+
+========================================
+IMPORTANT PATHS
+===============
+
+Website Directory:
+/var/www/html
+
+Main Webpage:
+/var/www/html/index.html
+
+========================================
+FINAL OUTCOME
+=============
+
+Successfully:
+
+1. Created Azure Linux VM
+2. Connected using SSH
+3. Installed Nginx
+4. Hosted Static Website
+5. Configured Public Access
+6. Enabled Remote Website Updates
