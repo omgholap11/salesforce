@@ -15,7 +15,7 @@ void diagnose() {
     string input;
 
     getline(cin, input);
-    cout<<input<<endl;
+    
     input = toLowerCase(input);
 
 
@@ -119,7 +119,7 @@ void routeDepartments() {
         cout << "Recommended Unit: ORTHOPEDICS DEPARTMENT (OPD ROOM 202)\n";
         cout << "Action Required: Move patient for X-ray imaging unit prior to specialist evaluation.\n";
     }
-    else if(child) {
+    else if(child) {   
         cout << "Emergency Level: STANDARD\n";
         cout << "Recommended Unit: PEDIATRICS WING (OPD ROOM NO 302)\n";
         cout << "Action Required: Check child's vital parameters at the desk.\n";
@@ -148,8 +148,7 @@ void showHealthTips() {
         cout << "=======================================================\n";
     }
 
-
-
+    
 int main() {
 
     int choice;

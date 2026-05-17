@@ -87,6 +87,9 @@ chmod 400 vm1_key.pem
 
 ssh -i vm1_key.pem azureuser@PUBLIC_IP
 
+if any sort of error try these 
+ssh-keygen -R 20.205.26.76
+
 Example:
 
 ssh -i vm1_key.pem azureuser@20.xx.xx.xx

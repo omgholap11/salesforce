@@ -19,6 +19,9 @@ ssh -i vm1_key.pem azureuser@YOUR_PUBLIC_IP
 Example:
 ssh -i vm1_key.pem azureuser@20.2.83.37
 
+if any sort of error try these 
+## ssh-keygen -R 20.205.26.76
+
 Purpose:
 Connects remotely to the Azure Linux Virtual Machine using SSH.
 
